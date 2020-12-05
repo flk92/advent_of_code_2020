@@ -1,5 +1,4 @@
 import sys
-from itertools import product
 
 
 def row_value(row):
@@ -20,14 +19,6 @@ def calc_line(line):
     row = sum(map(row_value, enumerate(rows)))
     col = sum(map(col_value, enumerate(cols)))
     return row * 8 + col
-
-
-def prod_to_str(tup):
-    return "".join(list(tup))
-
-
-def generate_all_cols(row_str):
-    return (row_str + prod_to_str(col) for col in product("LR", repeat=3))
 
 
 def solution(lines):
