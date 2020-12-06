@@ -1,33 +1,27 @@
 import sys
-from functools import reduce
 
 
-def accumulate_answers(acc, answers):
-    if acc is None:
-        return answers
-    return acc & answers
-
-
-def get_questions(lines):
-    return reduce(accumulate_answers, map(set, map(str.strip, lines)))
-
-
-def gather_answers(lines):
+def split_records(lines):
     acc = []
-    groups = []
     for line in lines:
         if line != "":
             acc.append(line)
         else:
-            groups.append(acc)
+            yield acc
             acc = []
     if len(acc) > 0:
-        groups.append(acc)
-    return map(get_questions, groups)
+        yield acc
+
+
+def get_answers(lines):
+    answers = map(set, lines)
+    return set.intersection(*answers)
 
 
 def solution(lines):
-    return sum(len(group) for group in gather_answers(lines))
+    groups = split_records(lines)
+    answers = map(get_answers, groups)
+    return sum(map(len, answers))
 
 
 if __name__ == "__main__":
