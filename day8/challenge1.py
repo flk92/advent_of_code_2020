@@ -32,11 +32,9 @@ def run(game, code):
 
     def step(game):
         if game:
+            yield game
             if game.pc < code_len:
-                yield game
                 yield from step(dispatch(game, code))
-            else:
-                yield game
 
     return step(game)
 

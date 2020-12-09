@@ -33,11 +33,9 @@ def run(game, code):
 
     def step(game):
         if game:
+            yield game
             if game.pc < code_len:
-                yield game
                 yield from step(dispatch(game, code))
-            else:
-                yield game
 
     return step(game)
 
@@ -67,12 +65,10 @@ def pc_is_not_eof(code_len):
 
 
 def generate_backtracked_fixes(history, code):
-    reverse_history = reversed(history)
-
     def possibly_corrupted(item):
         return code[item.pc][0] != 0
 
-    for item in reverse_history:
+    for item in reversed(history):
         if possibly_corrupted(item):
             modified_code = code[:]
             modified_code[item.pc] = flip(code[item.pc])
@@ -90,8 +86,8 @@ def solution(lines):
 
     if is_infinite_loop(history):
         try:
-            attempt = generate_backtracked_fixes(history, code)
-            result = next(dropwhile(is_infinite_loop, attempt))
+            attempts = generate_backtracked_fixes(history, code)
+            result = next(dropwhile(is_infinite_loop, attempts))
             return result[-1].acc
         except StopIteration:
             return None
